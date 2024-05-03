@@ -9,19 +9,10 @@ const connectDb = async () => {
   console.log(mongoose.connection.readyState, " --- Connection State");
 };
 
+
+
 module.exports = {
   connectDb,
   mongoose,
 };
 
-
-//               console.log("login");
-//               const apiResponse =await axios.get(
-//                 `${apiuri}/login/${values.username}/${values.password}/${values.role}`
-//               );
-// 
-//               if (apiResponse.data && apiResponse.data != "Login Failed") {
-//                 localStorage.setItem("login", apiResponse.data);
-//                 console.log("Login Successfully!!!");
-//                 
-//               }

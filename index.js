@@ -11,17 +11,17 @@ app.use(bodyParser.json());
 
 connectDb();
 
-const {handleMentorRegistration,handleStudentRegistration,handleLogin}=require("./service")
+const {handleAdminRegistration,handleMemberRegistration,handleLogin}=require("./service")
 
 app.get('/',(req,res)=>{
     res.send("Server connected...")
 })
 
-app.post('/mentorRegistration',(req,res)=>{
-    handleMentorRegistration(req, res);
+app.post('/adminRegistration',(req,res)=>{
+    handleAdminRegistration(req, res);
 })
-app.post('/studentRegistration',(req,res)=>{
-    handleStudentRegistration(req,res);
+app.post('/memberRegistration',(req,res)=>{
+    handleMemberRegistration(req,res);
 })
 
 

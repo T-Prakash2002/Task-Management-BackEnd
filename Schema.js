@@ -1,3 +1,4 @@
+const { date } = require('yup');
 const {mongoose} =require('./db')
 
 const Schema = mongoose.Schema;
@@ -7,15 +8,30 @@ const RegistrationSchema = new Schema({
   password: { type: String },
   email: { type: String },
   age:{type:Number},
+  Phonenumber:{type:Number},
+  Date_of_Join:{type:Date},
+  Address:{type:String},
+  City:{type:String},
+  ZipCode:{type:Number}
 });
 
 
 
-const MentorRegisterModel=mongoose.model("mentors",RegistrationSchema);
+const AdminRegisterModel=mongoose.model("Admins",RegistrationSchema);
 
-const StudentRegisterModel=mongoose.model("students",RegistrationSchema);
+const MemberRegisterModel=mongoose.model("Members",RegistrationSchema);
 
 module.exports={
-    MentorRegisterModel,
-    StudentRegisterModel
+    AdminRegisterModel,
+    MemberRegisterModel
 }
+
+// username: values.username,
+//                 password: values.password,
+//                 email: values.email,
+//                 age: values.age,
+//                 phonenumber: values.phonenumber,
+//                 dataofjoin: values.dataofjoin,
+//                 address: values.address,
+//                 city: values.city,
+//                 zipCode: values.zipCode,

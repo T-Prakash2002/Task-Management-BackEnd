@@ -1,23 +1,32 @@
-const { MentorRegisterModel,
-    StudentRegisterModel } = require('./Schema')
+const { AdminRegisterModel,
+    MemberRegisterModel } = require('./Schema')
 
 
-const handleMentorRegistration = async (apiReq, apiRes) => {
-    
+const handleAdminRegistration = async (apiReq, apiRes) => {
 
-    const { username, password, email, age } = apiReq.body;
+
+    const { username, password, email, age, phonenumber , dataofjoin , address, city , zipCode } = apiReq.body;
 
     if (
         username?.length &&
         password?.length &&
         email?.length &&
-        age?.length
+        age?.length &&
+        phonenumber?.length &&
+        address?.length &&
+        city?.length &&
+        zipCode?.length
     ) {
-        const dbResponse = await MentorRegisterModel.create({
+        const dbResponse = await AdminRegisterModel.create({
             username: username,
             password: password,
             email: email,
-            age: age
+            age: age,
+            Phonenumber: phonenumber,
+            Date_of_Join:dataofjoin,
+            Address: address,
+            City: city,
+            ZipCode: zipCode
         })
         if (dbResponse?._id) {
             apiRes.send(dbResponse);
@@ -27,21 +36,31 @@ const handleMentorRegistration = async (apiReq, apiRes) => {
 
 }
 
-const handleStudentRegistration = async (apiReq, apiRes) => {
+const handleMemberRegistration = async (apiReq, apiRes) => {
 
-    const { username, password, email, age } = apiReq.body;
+    const { username, password, email, age, phonenumber , dataofjoin , address, city , zipCode } = apiReq.body;
 
     if (
         username?.length &&
         password?.length &&
         email?.length &&
-        age?.length
+        age?.length &&
+        phonenumber?.length &&
+        address?.length &&
+        city?.length &&
+        zipCode?.length
+
     ) {
-        const dbResponse = await StudentRegisterModel.create({
+        const dbResponse = await MemberRegisterModel.create({
             username: username,
             password: password,
             email: email,
-            age: age
+            age: age,
+            Phonenumber: phonenumber,
+            Date_of_Join:dataofjoin,
+            Address: address,
+            City: city,
+            ZipCode: zipCode
         })
         if (dbResponse?._id) {
             apiRes.send(dbResponse);
@@ -52,25 +71,26 @@ const handleStudentRegistration = async (apiReq, apiRes) => {
 
 
 const handleLogin = async (apiReq, apiRes) => {
-    
-    const { username, password,role } = apiReq.params;
 
-    const Model=(role==='mentor')?MentorRegisterModel:StudentRegisterModel;
+    const { username, password, role } = apiReq.params;
+
+    const Model = (role === 'Admin') ? AdminRegisterModel : MemberRegisterModel;
 
     const dbResponse = await Model.findOne({
         username: username,
         password: password,
-        
-    });
+
+    }, { password: 0 });
+
 
     if (dbResponse?._id) {
-        apiRes.send(dbResponse.username);
+        apiRes.send(dbResponse);
         return;
     }
     apiRes.send("Login Failed");
 }
 module.exports = {
-    handleMentorRegistration,
-    handleStudentRegistration,
+    handleAdminRegistration,
+    handleMemberRegistration,
     handleLogin
 }
