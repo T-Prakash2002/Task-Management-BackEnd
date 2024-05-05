@@ -1,11 +1,11 @@
 const { AdminRegisterModel,
-    MemberRegisterModel } = require('./Schema')
+    MemberRegisterModel ,TaskModel} = require('./Schema')
 
 
 const handleAdminRegistration = async (apiReq, apiRes) => {
 
 
-    const { username, password, email, age, phonenumber , dataofjoin , address, city , zipCode } = apiReq.body;
+    const { username, password, email, age, phonenumber, dataofjoin, address, city, zipCode, role } = apiReq.body;
 
     if (
         username?.length &&
@@ -15,15 +15,17 @@ const handleAdminRegistration = async (apiReq, apiRes) => {
         phonenumber?.length &&
         address?.length &&
         city?.length &&
-        zipCode?.length
+        zipCode?.length &&
+        role?.length
     ) {
         const dbResponse = await AdminRegisterModel.create({
             username: username,
             password: password,
             email: email,
             age: age,
+            role: role,
             Phonenumber: phonenumber,
-            Date_of_Join:dataofjoin,
+            Date_of_Join: dataofjoin,
             Address: address,
             City: city,
             ZipCode: zipCode
@@ -38,7 +40,7 @@ const handleAdminRegistration = async (apiReq, apiRes) => {
 
 const handleMemberRegistration = async (apiReq, apiRes) => {
 
-    const { username, password, email, age, phonenumber , dataofjoin , address, city , zipCode } = apiReq.body;
+    const { username, password, email, age, phonenumber, dataofjoin, address, city, zipCode, role } = apiReq.body;
 
     if (
         username?.length &&
@@ -48,7 +50,8 @@ const handleMemberRegistration = async (apiReq, apiRes) => {
         phonenumber?.length &&
         address?.length &&
         city?.length &&
-        zipCode?.length
+        zipCode?.length &&
+        role?.length
 
     ) {
         const dbResponse = await MemberRegisterModel.create({
@@ -57,10 +60,11 @@ const handleMemberRegistration = async (apiReq, apiRes) => {
             email: email,
             age: age,
             Phonenumber: phonenumber,
-            Date_of_Join:dataofjoin,
+            Date_of_Join: dataofjoin,
             Address: address,
             City: city,
-            ZipCode: zipCode
+            ZipCode: zipCode,
+            role: role
         })
         if (dbResponse?._id) {
             apiRes.send(dbResponse);
@@ -89,8 +93,61 @@ const handleLogin = async (apiReq, apiRes) => {
     }
     apiRes.send("Login Failed");
 }
+
+const handleGetMemberList = async (apiReq, apiRes) => {
+
+    const dbResponse = await MemberRegisterModel.find({}, { _id: 0, password: 0, __v: 0 })
+    apiRes.send(dbResponse);
+    return;
+
+}
+
+const handleCreateTask = async (apiReq, apiRes) => {
+
+
+    const {
+        Task_Name,
+        description,
+        assigned_member,
+        TaskDeadLineDate,
+        priority,
+        assigner,
+    } = apiReq.body;
+
+
+    if (Task_Name?.length &&
+        description?.length &&
+        assigned_member?.length &&
+        TaskDeadLineDate?.length &&
+        priority?.length &&
+        assigner?.length
+    ) {
+        
+        const dbResponse=await TaskModel.create({
+            Task_Name:Task_Name,
+            Description:description,
+            Assigner_Name:assigner,
+            Priority:priority,
+            TaskDueDate:TaskDeadLineDate,
+            Assigned_members:assigned_member
+        })
+
+        if(dbResponse._id){
+            apiRes.send(dbResponse);
+            return;
+        }else{
+            console.log("fail")
+        }
+
+    }
+
+}
+
+
 module.exports = {
     handleAdminRegistration,
     handleMemberRegistration,
-    handleLogin
+    handleLogin,
+    handleGetMemberList,
+    handleCreateTask
 }

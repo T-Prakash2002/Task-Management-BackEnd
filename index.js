@@ -11,7 +11,12 @@ app.use(bodyParser.json());
 
 connectDb();
 
-const {handleAdminRegistration,handleMemberRegistration,handleLogin}=require("./service")
+const {handleAdminRegistration,
+handleMemberRegistration,
+handleLogin,
+handleGetMemberList,
+handleCreateTask,
+}=require("./service")
 
 app.get('/',(req,res)=>{
     res.send("Server connected...")
@@ -28,6 +33,17 @@ app.post('/memberRegistration',(req,res)=>{
 app.get("/login/:username/:password/:role", (apiReq, apiRes) => {
   handleLogin(apiReq, apiRes);
 });
+
+
+app.get("/getMemberList",(apiReq,apiRes)=>{
+    handleGetMemberList(apiReq,apiRes);
+})
+
+app.post("/createTask",(apiReq,apiRes)=>{
+
+    console.log("create task")
+    handleCreateTask(apiReq,apiRes)
+})
 
 app.listen(4000,()=>{
     console.log("Server Started");
