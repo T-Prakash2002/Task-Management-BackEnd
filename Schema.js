@@ -1,4 +1,3 @@
-const { date } = require('yup');
 const {mongoose} =require('./db')
 
 const Schema = mongoose.Schema;
@@ -27,22 +26,12 @@ const TaskSchema = new Schema({
   Assigner_Name:{type:String}
 });
 
-// Task_Name:Task_Name,
-//             Description:description,
-//             Assigner_Name:assigner,
-//             Priority:priority,
-//             TaskDueDate:TaskDeadLineDate,
-//             Assigned_members:assigned_member
 
-
-const AdminRegisterModel=mongoose.model("Admins",RegistrationSchema);
-
-const MemberRegisterModel=mongoose.model("Members",RegistrationSchema);
+const UserRegisterModel=mongoose.model("Users",RegistrationSchema); 
 
 const TaskModel=mongoose.model("Tasks",TaskSchema);
 
 module.exports={
-    AdminRegisterModel,
-    MemberRegisterModel,
+    UserRegisterModel,
     TaskModel
 }
