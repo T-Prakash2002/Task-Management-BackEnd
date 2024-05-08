@@ -149,7 +149,6 @@ const handleUpdateTask=async (apiReq, apiRes)=>{
             Priority: priority,
             TaskDueDate: TaskDeadLineDate,
             Assigned_members: [...assigned_member]}})
-
          if (dbResponse?._id) {
         apiRes.send(dbResponse);
         return;
@@ -168,7 +167,6 @@ const handleDeleteTask=async (apiReq, apiRes)=>{
     }
     apiRes.send("Deleted Failed");
 }
-
 
 
 module.exports = {
