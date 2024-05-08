@@ -3,6 +3,7 @@ const {mongoose} =require('./db')
 const Schema = mongoose.Schema;
 
 const RegistrationSchema = new Schema({
+  id:{type:Number},
   username: { type: String },
   password: { type: String },
   email: { type: String },
@@ -20,6 +21,7 @@ const TaskSchema = new Schema({
   Assigned_members: { type: Array },
   taskId:{type:Number},
   phonenumber:{type:Number},
+  CreatedAt:{type:Date},
   TaskDueDate:{type:Date},
   Priority:{type:String},
   taskStatus:{type:String},

@@ -16,6 +16,9 @@ handleLogin,
 handleGetMemberList,
 handleCreateTask,
 handleGetTaskList,
+handleGetParticularMemberTask,
+handleDeleteTask,
+handleUpdateTask
 }=require("./service")
 
 app.get('/',(req,res)=>{
@@ -44,6 +47,19 @@ app.post("/createTask",(apiReq,apiRes)=>{
 app.get("/getTaskList",(apiReq,apiRes)=>{
     handleGetTaskList(apiReq,apiRes);
 })
+
+app.get("/getTaskParticularMember/:username",(apiReq,apiRes)=>{
+    handleGetParticularMemberTask(apiReq,apiRes)
+})
+
+app.put("/EditTask/:idNum",(apiReq,apiRes)=>{
+    handleUpdateTask(apiReq,apiRes)
+})
+
+app.delete("/deleteParticularTask/:id",(apiReq,apiRes)=>{
+    handleDeleteTask(apiReq,apiRes);
+})
+
 
 
 app.listen(4000,()=>{
