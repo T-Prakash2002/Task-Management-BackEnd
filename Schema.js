@@ -20,12 +20,12 @@ const TaskSchema = new Schema({
   Description: { type: String },
   Assigned_members: { type: Array },
   taskId:{type:Number},
-  phonenumber:{type:Number},
   CreatedAt:{type:Date},
   TaskDueDate:{type:Date},
   Priority:{type:String},
   taskStatus:{type:String},
-  Assigner_Name:{type:String}
+  Assigner_Name:{type:String},
+  reminder:{type:Boolean,default:true},
 });
 
 
@@ -37,3 +37,14 @@ module.exports={
     UserRegisterModel,
     TaskModel
 }
+
+// 
+//     if (AllTasks.length>1) {
+//       TaskList.map((item) => {
+//         if (item.reminder) {
+//           setReminderTask(preTask=>{
+//             return [...preTask,item]
+//           });
+//         }
+//       });
+//     }

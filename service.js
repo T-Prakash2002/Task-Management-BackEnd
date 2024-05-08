@@ -1,4 +1,4 @@
-const { UserRegisterModel,TaskModel } = require('./Schema')
+const { UserRegisterModel, TaskModel } = require('./Schema')
 
 
 const handleUserRegistration = async (apiReq, apiRes) => {
@@ -17,11 +17,11 @@ const handleUserRegistration = async (apiReq, apiRes) => {
         zipCode?.length &&
         role?.length
     ) {
-        
-    const docCount=await UserRegisterModel.estimatedDocumentCount();
-        
-    const dbResponse = await UserRegisterModel.create({
-            id:docCount+1,
+
+        const docCount = await UserRegisterModel.estimatedDocumentCount();
+
+        const dbResponse = await UserRegisterModel.create({
+            id: docCount + 1,
             username: username,
             password: password,
             email: email,
@@ -96,13 +96,13 @@ const handleCreateTask = async (apiReq, apiRes) => {
             Description: description,
             Assigner_Name: assigner,
             Priority: priority,
-            CreatedAt:CreatedAt,
+            CreatedAt: CreatedAt,
             TaskDueDate: TaskDeadLineDate,
-            Assigned_members: assigned_member
+            Assigned_members: assigned_member,
+            taskStatus: 'Pending'
         })
 
         if (dbResponse._id) {
-            console.log(dbResponse);
             apiRes.send(dbResponse);
             return;
         } else {
@@ -121,19 +121,19 @@ const handleGetTaskList = async (apiReq, apiRes) => {
 
 }
 
-const handleGetParticularMemberTask=async (apiReq, apiRes)=>{
-    const {username}=apiReq.params;
+const handleGetParticularMemberTask = async (apiReq, apiRes) => {
+    const { username } = apiReq.params;
 
-    const dbResponse=await TaskModel.find({Assigned_members:username});
+    const dbResponse = await TaskModel.find({ Assigned_members: username });
 
     apiRes.send(dbResponse);
 
     return;
 }
 
-const handleUpdateTask=async (apiReq, apiRes)=>{
-     const {idNum}=apiReq.params;
-     const {
+const handleUpdateTask = async (apiReq, apiRes) => {
+    const { idNum } = apiReq.params;
+    const {
         Task_Name,
         description,
         assigned_member,
@@ -142,24 +142,27 @@ const handleUpdateTask=async (apiReq, apiRes)=>{
         assigner,
     } = apiReq.body;
 
-     const dbResponse=await TaskModel.findOneAndUpdate({_id:idNum},{$set:{
+    const dbResponse = await TaskModel.findOneAndUpdate({ _id: idNum }, {
+        $set: {
             Task_Name: Task_Name,
             Description: description,
             Assigner_Name: assigner,
             Priority: priority,
             TaskDueDate: TaskDeadLineDate,
-            Assigned_members: [...assigned_member]}})
-         if (dbResponse?._id) {
+            Assigned_members: [...assigned_member]
+        }
+    })
+    if (dbResponse?._id) {
         apiRes.send(dbResponse);
         return;
     }
     apiRes.send("Update Failed");
 }
 
-const handleDeleteTask=async (apiReq, apiRes)=>{
-    const {id}=apiReq.params;
+const handleDeleteTask = async (apiReq, apiRes) => {
+    const { id } = apiReq.params;
 
-    const dbResponse=await TaskModel.findOneAndDelete({_id:id})
+    const dbResponse = await TaskModel.findOneAndDelete({ _id: id })
 
     if (dbResponse?._id) {
         apiRes.send(dbResponse);
@@ -168,6 +171,25 @@ const handleDeleteTask=async (apiReq, apiRes)=>{
     apiRes.send("Deleted Failed");
 }
 
+const handleUpdateStatusTask = async (apiReq, apiRes) => {
+    const { id } = apiReq.params;
+    const {
+        taskStatus,
+        reminder
+    } = apiReq.body;
+
+    const dbResponse = await TaskModel.findOneAndUpdate({ _id: id }, {
+        $set: {
+            taskStatus: taskStatus,
+            reminder:reminder
+        }
+    })
+    if (dbResponse?._id) {
+        apiRes.send(dbResponse);
+        return;
+    }
+    apiRes.send("Update Failed");
+}
 
 module.exports = {
     handleUserRegistration,
@@ -177,5 +199,6 @@ module.exports = {
     handleGetTaskList,
     handleGetParticularMemberTask,
     handleDeleteTask,
-    handleUpdateTask
+    handleUpdateTask,
+    handleUpdateStatusTask
 }
