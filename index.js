@@ -19,7 +19,8 @@ handleGetTaskList,
 handleGetParticularMemberTask,
 handleDeleteTask,
 handleUpdateTask,
-handleUpdateStatusTask
+handleUpdateStatusTask,
+handleupdatePriority
 }=require("./service")
 
 app.get('/',(req,res)=>{
@@ -58,6 +59,9 @@ app.put("/EditTask/:idNum",(apiReq,apiRes)=>{
 })
 app.put("/updateStatus/:id",(apiReq,apiRes)=>{
     handleUpdateStatusTask(apiReq,apiRes)
+})
+app.put("/handleupdatePriority/:id",(apiReq,apiRes)=>{
+    handleupdatePriority(apiReq,apiRes)
 })
 
 app.delete("/deleteParticularTask/:id",(apiReq,apiRes)=>{

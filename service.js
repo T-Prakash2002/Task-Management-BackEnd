@@ -17,7 +17,6 @@ const handleUserRegistration = async (apiReq, apiRes) => {
         zipCode?.length &&
         role?.length
     ) {
-
         const docCount = await UserRegisterModel.estimatedDocumentCount();
 
         const dbResponse = await UserRegisterModel.create({
@@ -78,6 +77,7 @@ const handleCreateTask = async (apiReq, apiRes) => {
         assigned_member,
         CreatedAt,
         TaskDeadLineDate,
+        TaskDeadLineTime,
         priority,
         assigner,
     } = apiReq.body;
@@ -98,6 +98,7 @@ const handleCreateTask = async (apiReq, apiRes) => {
             Priority: priority,
             CreatedAt: CreatedAt,
             TaskDueDate: TaskDeadLineDate,
+            TaskDueTime:TaskDeadLineTime,
             Assigned_members: assigned_member,
             taskStatus: 'Pending'
         })
@@ -131,6 +132,7 @@ const handleGetParticularMemberTask = async (apiReq, apiRes) => {
     return;
 }
 
+
 const handleUpdateTask = async (apiReq, apiRes) => {
     const { idNum } = apiReq.params;
     const {
@@ -138,6 +140,7 @@ const handleUpdateTask = async (apiReq, apiRes) => {
         description,
         assigned_member,
         TaskDeadLineDate,
+        TaskDeadLineTime,
         priority,
         assigner,
     } = apiReq.body;
@@ -149,6 +152,7 @@ const handleUpdateTask = async (apiReq, apiRes) => {
             Assigner_Name: assigner,
             Priority: priority,
             TaskDueDate: TaskDeadLineDate,
+            TaskDueDate: TaskDeadLineTime,
             Assigned_members: [...assigned_member]
         }
     })
@@ -190,6 +194,25 @@ const handleUpdateStatusTask = async (apiReq, apiRes) => {
     }
     apiRes.send("Update Failed");
 }
+const handleupdatePriority = async (apiReq, apiRes) => {
+    const { id } = apiReq.params;
+    const {
+        Priority,
+        reminder
+    } = apiReq.body;
+    const dbResponse = await TaskModel.findOneAndUpdate({ _id: id }, {
+        $set: {
+            Priority: Priority,
+            reminder:reminder
+        }
+    })
+    if (dbResponse?._id) {
+        apiRes.send(dbResponse);
+        return;
+    }
+    apiRes.send("Update Failed");
+}
+
 
 module.exports = {
     handleUserRegistration,
@@ -200,5 +223,6 @@ module.exports = {
     handleGetParticularMemberTask,
     handleDeleteTask,
     handleUpdateTask,
-    handleUpdateStatusTask
+    handleUpdateStatusTask,
+    handleupdatePriority
 }

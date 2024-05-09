@@ -22,6 +22,7 @@ const TaskSchema = new Schema({
   taskId:{type:Number},
   CreatedAt:{type:Date},
   TaskDueDate:{type:Date},
+  TaskDueTime:{type:String},
   Priority:{type:String},
   taskStatus:{type:String},
   Assigner_Name:{type:String},
@@ -38,13 +39,9 @@ module.exports={
     TaskModel
 }
 
-// 
-//     if (AllTasks.length>1) {
-//       TaskList.map((item) => {
-//         if (item.reminder) {
-//           setReminderTask(preTask=>{
-//             return [...preTask,item]
-//           });
-//         }
-//       });
-//     }
+
+
+// const apiRes = await axios.put(`${apiuri}/updatePriority/${data._id}`, {
+//         Priority:"Priority",
+//         reminder:true
+//     });
