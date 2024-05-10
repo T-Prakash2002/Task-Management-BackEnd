@@ -1,4 +1,5 @@
 const { UserRegisterModel, TaskModel } = require('./Schema')
+const jwt = require('jsonwebtoken')
 
 
 const handleUserRegistration = async (apiReq, apiRes) => {
@@ -44,17 +45,50 @@ const handleUserRegistration = async (apiReq, apiRes) => {
 
 const handleLogin = async (apiReq, apiRes) => {
 
-    const { username, password, role } = apiReq.params;
+    const { username, role } = apiReq.query;
 
     const dbResponse = await UserRegisterModel.findOne({
         username: username,
-        password: password,
+        role: role,
+    }, { password: 1 });
+
+
+    if (dbResponse?._id) {
+
+        apiRes.send(dbResponse);
+
+        return;
+    }
+    apiRes.send("Login Failed");
+}
+
+const verifyUser =async (username) => {
+    const dbResponse = await UserRegisterModel.findOne({username:username });
+    if (dbResponse._id) {
+        return true;
+    }
+    return false;
+}
+const handleLoginUser = async (apiReq, apiRes) => {
+
+    const { username, role } = apiReq.query;
+
+    const dbResponse = await UserRegisterModel.findOne({
+        username: username,
         role: role,
     }, { password: 0 });
 
 
     if (dbResponse?._id) {
-        apiRes.send(dbResponse);
+
+
+
+        const token = jwt.sign({ data: username }, "userkey");
+
+        const dbResponse1 = { ...dbResponse, tokenValid: token }
+
+        apiRes.send(dbResponse1);
+
         return;
     }
     apiRes.send("Login Failed");
@@ -98,7 +132,7 @@ const handleCreateTask = async (apiReq, apiRes) => {
             Priority: priority,
             CreatedAt: CreatedAt,
             TaskDueDate: TaskDeadLineDate,
-            TaskDueTime:TaskDeadLineTime,
+            TaskDueTime: TaskDeadLineTime,
             Assigned_members: assigned_member,
             taskStatus: 'Pending'
         })
@@ -185,7 +219,7 @@ const handleUpdateStatusTask = async (apiReq, apiRes) => {
     const dbResponse = await TaskModel.findOneAndUpdate({ _id: id }, {
         $set: {
             taskStatus: taskStatus,
-            reminder:reminder
+            reminder: reminder
         }
     })
     if (dbResponse?._id) {
@@ -203,7 +237,7 @@ const handleupdatePriority = async (apiReq, apiRes) => {
     const dbResponse = await TaskModel.findOneAndUpdate({ _id: id }, {
         $set: {
             Priority: Priority,
-            reminder:reminder
+            reminder: reminder
         }
     })
     if (dbResponse?._id) {
@@ -216,7 +250,7 @@ const handleupdatePriority = async (apiReq, apiRes) => {
 
 module.exports = {
     handleUserRegistration,
-    handleLogin,
+    handleLogin, handleLoginUser,
     handleGetMemberList,
     handleCreateTask,
     handleGetTaskList,
@@ -224,5 +258,6 @@ module.exports = {
     handleDeleteTask,
     handleUpdateTask,
     handleUpdateStatusTask,
-    handleupdatePriority
+    handleupdatePriority,
+    verifyUser
 }

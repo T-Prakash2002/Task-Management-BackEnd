@@ -3,16 +3,25 @@ const express = require('express');
 const { connectDb, mongoose } = require("./db");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const process=require('dotenv').config()
+const jwt=require('jsonwebtoken')
 
+
+const token=jwt.sign({data:"mypassword"},"mykey");
+const decode=jwt.verify(token,'mykey')
+
+// console.log(decode);
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-connectDb();
+
 
 const {handleUserRegistration,
 handleLogin,
+verifyUser,
+handleLoginUser,
 handleGetMemberList,
 handleCreateTask,
 handleGetTaskList,
@@ -21,7 +30,44 @@ handleDeleteTask,
 handleUpdateTask,
 handleUpdateStatusTask,
 handleupdatePriority
-}=require("./service")
+}=require("./service");
+
+const auth=(req,res,next)=>{
+
+    if (req.path === "/login") {
+    next();
+    
+
+  }else if(req.path==="/loginUser"){
+    next();
+  }
+  else if(req.path==="/UserRegistration"){
+    next();
+  }
+   else {
+
+    // console.log(req)
+    const userToken = req.headers.auth;
+    // console.log(userToken);
+    if (!userToken) {
+      res.send(400);
+    }
+    const tokenDecoded = jwt.verify(userToken, "userkey");
+    
+    const username = tokenDecoded.data;
+
+    verifyUser(username).then((response) => {
+      if (response) {
+        next();
+      } else {
+        res.send(400);
+      }
+    });
+}
+}
+app.use(auth)
+
+connectDb();
 
 app.get('/',(req,res)=>{
     res.send("Server connected...")
@@ -32,10 +78,12 @@ app.post('/UserRegistration',(req,res)=>{
 })
 
 
-app.get("/login/:username/:password/:role", (apiReq, apiRes) => {
+app.get("/login", (apiReq, apiRes) => {
   handleLogin(apiReq, apiRes);
 });
-
+app.get("/loginUser", (apiReq, apiRes) => {
+  handleLoginUser(apiReq, apiRes);
+});
 
 app.get("/getMemberList",(apiReq,apiRes)=>{
     handleGetMemberList(apiReq,apiRes);
