@@ -11,10 +11,9 @@ const RegistrationSchema = new Schema({
   Phonenumber:{type:Number},
   Date_of_Join:{type:Date},
   Address:{type:String},
-  City:{type:String},
-  ZipCode:{type:Number},
   role:{type:String}
 });
+
 const TaskSchema = new Schema({
   Task_Name: { type: String },
   Description: { type: String },

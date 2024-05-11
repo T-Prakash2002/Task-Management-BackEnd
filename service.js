@@ -1,5 +1,7 @@
 const { UserRegisterModel, TaskModel } = require('./Schema')
 const jwt = require('jsonwebtoken')
+const bcryptjs=require('bcryptjs')
+const process=require('dotenv').config()
 
 
 const handleUserRegistration = async (apiReq, apiRes) => {
@@ -20,24 +22,32 @@ const handleUserRegistration = async (apiReq, apiRes) => {
     ) {
         const docCount = await UserRegisterModel.estimatedDocumentCount();
 
+        const myHashPassword = await bcryptjs.hash(values.password, 4);
+
+        const user = await User.findOne({ email });
+        if (user) {
+            return apiRes.send("email already registered");
+        }
+
         const dbResponse = await UserRegisterModel.create({
             id: docCount + 1,
             username: username,
-            password: password,
+            password: myHashPassword,
             email: email,
             age: age,
             role: role,
             Phonenumber: phonenumber,
             Date_of_Join: dataofjoin,
             Address: address,
-            City: city,
-            ZipCode: zipCode
+           
         })
-
 
         if (dbResponse?._id) {
             apiRes.send(dbResponse);
             return;
+        } else {
+            apiRes.send("Registration Failed")
+            return
         }
     }
 
@@ -45,54 +55,74 @@ const handleUserRegistration = async (apiReq, apiRes) => {
 
 const handleLogin = async (apiReq, apiRes) => {
 
-    const { username, role } = apiReq.query;
+    const { email,password, role } = apiReq.query;
+
+
 
     const dbResponse = await UserRegisterModel.findOne({
-        username: username,
-        role: role,
-    }, { password: 1 });
+        email: email,role:role
+    });
+
+    if(!dbResponse){
+        return apiRes.send("Email not registered!")
+        }
+
+    const isValid = await bcryptjs.compare(
+                password,
+                dbResponse.password
+              );
+
+// console.log(isValid);
+    if(isValid){
+
+        const token = jwt.sign({ data: dbResponse._id }, process.parsed.SECRET_KEY);
+
+        const res=await UserRegisterModel.findOne({email},{password:0})
 
 
-    if (dbResponse?._id) {
-
-        apiRes.send(dbResponse);
-
-        return;
-    }
-    apiRes.send("Login Failed");
-}
-
-const verifyUser =async (username) => {
-    const dbResponse = await UserRegisterModel.findOne({username:username });
-    if (dbResponse._id) {
-        return true;
-    }
-    return false;
-}
-const handleLoginUser = async (apiReq, apiRes) => {
-
-    const { username, role } = apiReq.query;
-
-    const dbResponse = await UserRegisterModel.findOne({
-        username: username,
-        role: role,
-    }, { password: 0 });
-
-
-    if (dbResponse?._id) {
-
-
-
-        const token = jwt.sign({ data: username }, "userkey");
-
-        const dbResponse1 = { ...dbResponse, tokenValid: token }
+        const dbResponse1 = { ...res, tokenValid: token }
 
         apiRes.send(dbResponse1);
 
         return;
     }
-    apiRes.send("Login Failed");
+    else{
+        apiRes.send("Login Failed");
+    }
 }
+
+const verifyUser = async (username) => {
+    const dbResponse = await UserRegisterModel.findOne({ username: username });
+    if (dbResponse._id) {
+        return true;
+    }
+    return false;
+}
+// const handleLoginUser = async (apiReq, apiRes) => {
+// 
+//     const { username, role, id } = apiReq.query;
+// 
+//     const dbResponse = await UserRegisterModel.findOne({
+//         username: username,
+//         role: role,
+//         _id: id
+//     }, { password: 0 });
+// 
+// 
+//     if (dbResponse?._id) {
+// 
+// 
+// 
+//         const token = jwt.sign({ data: username }, "userkey");
+// 
+//         const dbResponse1 = { ...dbResponse, tokenValid: token }
+// 
+//         apiRes.send(dbResponse1);
+// 
+//         return;
+//     }
+//     apiRes.send("Login Failed");
+// }
 
 const handleGetMemberList = async (apiReq, apiRes) => {
 
@@ -250,7 +280,7 @@ const handleupdatePriority = async (apiReq, apiRes) => {
 
 module.exports = {
     handleUserRegistration,
-    handleLogin, handleLoginUser,
+    handleLogin,
     handleGetMemberList,
     handleCreateTask,
     handleGetTaskList,

@@ -7,8 +7,8 @@ const process=require('dotenv').config()
 const jwt=require('jsonwebtoken')
 
 
-const token=jwt.sign({data:"mypassword"},"mykey");
-const decode=jwt.verify(token,'mykey')
+// const token=jwt.sign({data:"mypassword"},process.parsed.SECRET_KEY);
+// const decode=jwt.verify(token,process.parsed.SECRET_KEY)
 
 // console.log(decode);
 
@@ -37,9 +37,6 @@ const auth=(req,res,next)=>{
     if (req.path === "/login") {
     next();
     
-
-  }else if(req.path==="/loginUser"){
-    next();
   }
   else if(req.path==="/UserRegistration"){
     next();
@@ -77,13 +74,13 @@ app.post('/UserRegistration',(req,res)=>{
     handleUserRegistration(req, res);
 })
 
-
 app.get("/login", (apiReq, apiRes) => {
   handleLogin(apiReq, apiRes);
 });
-app.get("/loginUser", (apiReq, apiRes) => {
-  handleLoginUser(apiReq, apiRes);
-});
+
+// app.get("/loginUser", (apiReq, apiRes) => {
+//   handleLoginUser(apiReq, apiRes);
+// });
 
 app.get("/getMemberList",(apiReq,apiRes)=>{
     handleGetMemberList(apiReq,apiRes);
