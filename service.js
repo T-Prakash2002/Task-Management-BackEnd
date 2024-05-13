@@ -7,7 +7,7 @@ const process=require('dotenv').config()
 const handleUserRegistration = async (apiReq, apiRes) => {
 
 
-    const { username, password, email, age, phonenumber, dataofjoin, address, city, zipCode, role } = apiReq.body;
+    const { username, password, email, age, phonenumber, dataofjoin, address, role } = apiReq.body;
 
     if (
         username?.length &&
@@ -16,18 +16,17 @@ const handleUserRegistration = async (apiReq, apiRes) => {
         age?.length &&
         phonenumber?.length &&
         address?.length &&
-        city?.length &&
-        zipCode?.length &&
         role?.length
     ) {
         const docCount = await UserRegisterModel.estimatedDocumentCount();
 
-        const myHashPassword = await bcryptjs.hash(values.password, 4);
+        const myHashPassword = await bcryptjs.hash(password, 4);
 
-        const user = await User.findOne({ email });
+        const user = await UserRegisterModel.findOne({ email });
         if (user) {
             return apiRes.send("email already registered");
         }
+
 
         const dbResponse = await UserRegisterModel.create({
             id: docCount + 1,
@@ -57,11 +56,11 @@ const handleLogin = async (apiReq, apiRes) => {
 
     const { email,password, role } = apiReq.query;
 
-
-
     const dbResponse = await UserRegisterModel.findOne({
-        email: email,role:role
+        email: email,
+        role:role
     });
+
 
     if(!dbResponse){
         return apiRes.send("Email not registered!")
@@ -90,39 +89,13 @@ const handleLogin = async (apiReq, apiRes) => {
         apiRes.send("Login Failed");
     }
 }
-
-const verifyUser = async (username) => {
-    const dbResponse = await UserRegisterModel.findOne({ username: username });
+const verifyUser = async (id) => {
+    const dbResponse = await UserRegisterModel.findOne({ _id: id });
     if (dbResponse._id) {
         return true;
     }
     return false;
 }
-// const handleLoginUser = async (apiReq, apiRes) => {
-// 
-//     const { username, role, id } = apiReq.query;
-// 
-//     const dbResponse = await UserRegisterModel.findOne({
-//         username: username,
-//         role: role,
-//         _id: id
-//     }, { password: 0 });
-// 
-// 
-//     if (dbResponse?._id) {
-// 
-// 
-// 
-//         const token = jwt.sign({ data: username }, "userkey");
-// 
-//         const dbResponse1 = { ...dbResponse, tokenValid: token }
-// 
-//         apiRes.send(dbResponse1);
-// 
-//         return;
-//     }
-//     apiRes.send("Login Failed");
-// }
 
 const handleGetMemberList = async (apiReq, apiRes) => {
 
@@ -141,7 +114,6 @@ const handleCreateTask = async (apiReq, apiRes) => {
         assigned_member,
         CreatedAt,
         TaskDeadLineDate,
-        TaskDeadLineTime,
         priority,
         assigner,
     } = apiReq.body;
@@ -162,7 +134,6 @@ const handleCreateTask = async (apiReq, apiRes) => {
             Priority: priority,
             CreatedAt: CreatedAt,
             TaskDueDate: TaskDeadLineDate,
-            TaskDueTime: TaskDeadLineTime,
             Assigned_members: assigned_member,
             taskStatus: 'Pending'
         })

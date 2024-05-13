@@ -21,7 +21,6 @@ const TaskSchema = new Schema({
   taskId:{type:Number},
   CreatedAt:{type:Date},
   TaskDueDate:{type:Date},
-  TaskDueTime:{type:String},
   Priority:{type:String},
   taskStatus:{type:String},
   Assigner_Name:{type:String},

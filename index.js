@@ -43,17 +43,20 @@ const auth=(req,res,next)=>{
   }
    else {
 
-    // console.log(req)
+
     const userToken = req.headers.auth;
     // console.log(userToken);
     if (!userToken) {
       res.send(400);
     }
-    const tokenDecoded = jwt.verify(userToken, "userkey");
     
-    const username = tokenDecoded.data;
+    const tokenDecoded = jwt.verify(userToken,process.parsed.SECRET_KEY);
+    
+    const id = tokenDecoded.data;
 
-    verifyUser(username).then((response) => {
+    // console.log(id);
+
+    verifyUser(id).then((response) => {
       if (response) {
         next();
       } else {
