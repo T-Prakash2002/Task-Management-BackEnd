@@ -11,7 +11,11 @@ const RegistrationSchema = new Schema({
   Phonenumber:{type:Number},
   Date_of_Join:{type:Date},
   Address:{type:String},
-  role:{type:String}
+  role:{type:String},
+  viewTask:{type:Boolean,default:true},
+  createTask:{type:Boolean,default:false},
+  editTask:{type:Boolean,default:false},
+  deleteTask:{type:Boolean,default:false},
 });
 
 const TaskSchema = new Schema({

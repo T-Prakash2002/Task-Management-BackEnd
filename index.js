@@ -29,7 +29,8 @@ handleGetParticularMemberTask,
 handleDeleteTask,
 handleUpdateTask,
 handleUpdateStatusTask,
-handleupdatePriority
+handleupdatePriority,
+handleUpdatePermissionTask
 }=require("./service");
 
 const auth=(req,res,next)=>{
@@ -107,6 +108,10 @@ app.put("/EditTask/:idNum",(apiReq,apiRes)=>{
 })
 app.put("/updateStatus/:id",(apiReq,apiRes)=>{
     handleUpdateStatusTask(apiReq,apiRes)
+})
+
+app.put("/updatePermission/:email",(apiReq,apiRes)=>{
+    handleUpdatePermissionTask(apiReq,apiRes)
 })
 app.put("/handleupdatePriority/:id",(apiReq,apiRes)=>{
     handleupdatePriority(apiReq,apiRes)

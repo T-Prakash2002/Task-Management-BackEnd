@@ -1,7 +1,7 @@
 const { UserRegisterModel, TaskModel } = require('./Schema')
 const jwt = require('jsonwebtoken')
-const bcryptjs=require('bcryptjs')
-const process=require('dotenv').config()
+const bcryptjs = require('bcryptjs')
+const process = require('dotenv').config()
 
 
 const handleUserRegistration = async (apiReq, apiRes) => {
@@ -38,7 +38,7 @@ const handleUserRegistration = async (apiReq, apiRes) => {
             Phonenumber: phonenumber,
             Date_of_Join: dataofjoin,
             Address: address,
-           
+
         })
 
         if (dbResponse?._id) {
@@ -54,29 +54,29 @@ const handleUserRegistration = async (apiReq, apiRes) => {
 
 const handleLogin = async (apiReq, apiRes) => {
 
-    const { email,password, role } = apiReq.query;
+    const { email, password, role } = apiReq.query;
 
     const dbResponse = await UserRegisterModel.findOne({
         email: email,
-        role:role
+        role: role
     });
 
 
-    if(!dbResponse){
+    if (!dbResponse) {
         return apiRes.send("Email not registered!")
-        }
+    }
 
     const isValid = await bcryptjs.compare(
-                password,
-                dbResponse.password
-              );
+        password,
+        dbResponse.password
+    );
 
-// console.log(isValid);
-    if(isValid){
+    // console.log(isValid);
+    if (isValid) {
 
         const token = jwt.sign({ data: dbResponse._id }, process.parsed.SECRET_KEY);
 
-        const res=await UserRegisterModel.findOne({email},{password:0})
+        const res = await UserRegisterModel.findOne({ email }, { password: 0 })
 
 
         const dbResponse1 = { ...res, tokenValid: token }
@@ -85,13 +85,13 @@ const handleLogin = async (apiReq, apiRes) => {
 
         return;
     }
-    else{
+    else {
         apiRes.send("Login Failed");
     }
 }
 const verifyUser = async (id) => {
     const dbResponse = await UserRegisterModel.findOne({ _id: id });
-    if (dbResponse._id) {
+    if (dbResponse?._id) {
         return true;
     }
     return false;
@@ -247,6 +247,21 @@ const handleupdatePriority = async (apiReq, apiRes) => {
     }
     apiRes.send("Update Failed");
 }
+const handleUpdatePermissionTask = async (apiReq, apiRes) => {
+    // console.log(apiReq.params,apiReq.body)
+
+    const email = apiReq.params;
+    const permission = apiReq.body;
+
+    const dbResponse = await UserRegisterModel.findOneAndUpdate(email,permission)
+        if (dbResponse?._id) {
+            apiRes.send("Successfully Update");
+            return
+        }
+        apiRes.send("Failed to Update!")
+        return;
+
+}
 
 
 module.exports = {
@@ -260,5 +275,6 @@ module.exports = {
     handleUpdateTask,
     handleUpdateStatusTask,
     handleupdatePriority,
-    verifyUser
+    verifyUser,
+    handleUpdatePermissionTask
 }
