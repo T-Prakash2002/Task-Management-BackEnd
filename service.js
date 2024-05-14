@@ -175,7 +175,6 @@ const handleUpdateTask = async (apiReq, apiRes) => {
         description,
         assigned_member,
         TaskDeadLineDate,
-        TaskDeadLineTime,
         priority,
         assigner,
     } = apiReq.body;
@@ -187,7 +186,6 @@ const handleUpdateTask = async (apiReq, apiRes) => {
             Assigner_Name: assigner,
             Priority: priority,
             TaskDueDate: TaskDeadLineDate,
-            TaskDueDate: TaskDeadLineTime,
             Assigned_members: [...assigned_member]
         }
     })
