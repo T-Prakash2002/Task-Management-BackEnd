@@ -35,8 +35,6 @@ handleUpdatePermissionTask
 
 const auth=(req,res,next)=>{
 
-  console.log(req.path);
-
     if (req.path === "/login"){
     next();
   }
