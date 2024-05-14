@@ -35,15 +35,15 @@ handleUpdatePermissionTask
 
 const auth=(req,res,next)=>{
 
-    if (req.path === "/login") {
+  console.log(req.path);
+
+    if (req.path === "/login"){
     next();
-    
   }
   else if(req.path==="/UserRegistration"){
     next();
   }
    else {
-
 
     const userToken = req.headers.auth;
     // console.log(userToken);
@@ -55,7 +55,6 @@ const auth=(req,res,next)=>{
     
     const id = tokenDecoded.data;
 
-    // console.log(id);
 
     verifyUser(id).then((response) => {
       if (response) {

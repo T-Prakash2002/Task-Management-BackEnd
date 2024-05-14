@@ -71,17 +71,17 @@ const handleLogin = async (apiReq, apiRes) => {
         dbResponse.password
     );
 
-    // console.log(isValid);
     if (isValid) {
 
         const token = jwt.sign({ data: dbResponse._id }, process.parsed.SECRET_KEY);
 
         const res = await UserRegisterModel.findOne({ email }, { password: 0 })
 
-
         const dbResponse1 = { ...res, tokenValid: token }
 
         apiRes.send(dbResponse1);
+
+        console.log(token)
 
         return;
     }
