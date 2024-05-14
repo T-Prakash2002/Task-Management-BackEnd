@@ -63,7 +63,7 @@ const handleLogin = async (apiReq, apiRes) => {
 
 
     if (!dbResponse) {
-        return apiRes.send("Email not registered!")
+        return apiRes.send("Login Failed");
     }
 
     const isValid = await bcryptjs.compare(
@@ -80,8 +80,6 @@ const handleLogin = async (apiReq, apiRes) => {
         const dbResponse1 = { ...res, tokenValid: token }
 
         apiRes.send(dbResponse1);
-
-        console.log(token)
 
         return;
     }

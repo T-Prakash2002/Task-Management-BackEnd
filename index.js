@@ -44,7 +44,6 @@ const auth=(req,res,next)=>{
    else {
 
     const userToken = req.headers.auth;
-    // console.log(userToken);
     if (!userToken) {
       res.send(400);
     }
