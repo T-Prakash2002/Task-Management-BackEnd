@@ -43,7 +43,8 @@ const auth=(req,res,next)=>{
    else {
     const userToken = req.headers.auth;
     if (!userToken) {
-      res.send(400);
+      // res.send(400);
+      console.log("Jwt Token Error")
     }
     
     const tokenDecoded = jwt.verify(userToken,process.parsed.SECRET_KEY);
@@ -54,7 +55,9 @@ const auth=(req,res,next)=>{
       if (response) {
         next();
       } else {
-        res.send(400);
+        // res.send(400);
+        console.log("Jwt Token Error")
+
       }
     });
 }
