@@ -50,7 +50,6 @@ const auth=(req,res,next)=>{
     
     const username = tokenDecoded.data;
 
-
     verifyUser(username).then((response) => {
       if (response) {
         next();
