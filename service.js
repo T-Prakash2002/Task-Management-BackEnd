@@ -73,7 +73,7 @@ const handleLogin = async (apiReq, apiRes) => {
 
     if (isValid) {
 
-        const token = jwt.sign({ data: dbResponse._id }, process.parsed.SECRET_KEY);
+        const token = jwt.sign({ data: dbResponse.username }, process.parsed.SECRET_KEY);
 
         const res = await UserRegisterModel.findOne({ email }, { password: 0 })
 
@@ -87,9 +87,12 @@ const handleLogin = async (apiReq, apiRes) => {
         apiRes.send("Login Failed");
     }
 }
-const verifyUser = async (id) => {
-    const dbResponse = await UserRegisterModel.findOne({ _id: id });
-    if (dbResponse?._id) {
+
+
+const verifyUser = async (username) => {
+
+    const dbResponse = await UserRegisterModel.findOne({ username: username });
+    if (dbResponse?.username) {
         return true;
     }
     return false;

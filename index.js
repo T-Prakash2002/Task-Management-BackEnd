@@ -1,6 +1,6 @@
 
 const express = require('express');
-const { connectDb, mongoose } = require("./db");
+const { connectDb } = require("./db");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const process=require('dotenv').config()
@@ -9,8 +9,8 @@ const jwt=require('jsonwebtoken')
 
 // const token=jwt.sign({data:"mypassword"},process.parsed.SECRET_KEY);
 // const decode=jwt.verify(token,process.parsed.SECRET_KEY)
-
 // console.log(decode);
+
 
 const app = express();
 app.use(cors());
@@ -21,7 +21,6 @@ app.use(bodyParser.json());
 const {handleUserRegistration,
 handleLogin,
 verifyUser,
-handleLoginUser,
 handleGetMemberList,
 handleCreateTask,
 handleGetTaskList,
@@ -42,7 +41,6 @@ const auth=(req,res,next)=>{
     next();
   }
    else {
-
     const userToken = req.headers.auth;
     if (!userToken) {
       res.send(400);
@@ -50,10 +48,10 @@ const auth=(req,res,next)=>{
     
     const tokenDecoded = jwt.verify(userToken,process.parsed.SECRET_KEY);
     
-    const id = tokenDecoded.data;
+    const username = tokenDecoded.data;
 
 
-    verifyUser(id).then((response) => {
+    verifyUser(username).then((response) => {
       if (response) {
         next();
       } else {
@@ -77,10 +75,6 @@ app.post('/UserRegistration',(req,res)=>{
 app.get("/login", (apiReq, apiRes) => {
   handleLogin(apiReq, apiRes);
 });
-
-// app.get("/loginUser", (apiReq, apiRes) => {
-//   handleLoginUser(apiReq, apiRes);
-// });
 
 app.get("/getMemberList",(apiReq,apiRes)=>{
     handleGetMemberList(apiReq,apiRes);
@@ -109,6 +103,7 @@ app.put("/updateStatus/:id",(apiReq,apiRes)=>{
 app.put("/updatePermission/:email",(apiReq,apiRes)=>{
     handleUpdatePermissionTask(apiReq,apiRes)
 })
+
 app.put("/handleupdatePriority/:id",(apiReq,apiRes)=>{
     handleupdatePriority(apiReq,apiRes)
 })
@@ -117,8 +112,6 @@ app.delete("/deleteParticularTask/:id",(apiReq,apiRes)=>{
     handleDeleteTask(apiReq,apiRes);
 })
 
-
-
 app.listen(4000,()=>{
-    console.log("Server Started");
+    console.log("Server Started on Port 4000");
 })
