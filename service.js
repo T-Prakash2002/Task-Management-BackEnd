@@ -37,6 +37,7 @@ const handleUserRegistration = async (apiReq, apiRes) => {
             role: role,
             Phonenumber: phonenumber,
             Date_of_Join: dataofjoin,
+            Created_Date: new Date(),
             Address: address,
 
         })
